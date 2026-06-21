@@ -1,17 +1,13 @@
-//
-//  LinkStashApp.swift
-//  LinkStash
-//
-//  Created by Prisha Agarwalla on 6/19/26.
-//
-
 import SwiftUI
 
 @main
-struct LinkStashApp: App {
+
+struct LinkStashApp: App{
+    // This conencts our AppDelegate (menu bar setup) to the app
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        Settings {
+            EmptyView()
         }
     }
 }
