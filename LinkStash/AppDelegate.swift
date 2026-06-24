@@ -27,7 +27,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         // the popover
         popover = NSPopover()
-        popover.contentSize = NSSize(width: 360, height:500)
+        popover.contentSize = NSSize(width: 360, height: 540)
         // .trasient = closes when i clcik anywhere else
         popover.behavior = .transient
         // plug in out SwiftUI view as the contents

@@ -51,6 +51,9 @@ class LinkStore: ObservableObject {
         links.remove(atOffsets: offsets)
         save()
     }
+    // public version used when ContentView modifies links directly (e.g. filtered delete)
+    func savePublic() { save() }
+
     // save to disk using UserDefaults
     private func save() {
         if let encoded = try? JSONEncoder().encode(links) {
