@@ -88,8 +88,8 @@ struct ContentView: View {
                     .textFieldStyle(.plain)
                     .font(PD.body(15))
                     .foregroundColor(PD.Colors.ink900)
-                    .onChange(of: urlInput) { newVal in
-                        selectedCategory = guessCategory(from: newVal)
+                    .onChange(of: urlInput) {
+                        selectedCategory = guessCategory(from: urlInput)
                     }
                     .onSubmit { saveLink() }
 
@@ -218,6 +218,15 @@ struct ContentView: View {
                     store.links.removeAll { ids.contains($0.id) }
                     store.savePublic()
                 }
+
+                // Swipe hint footer
+                Text("← swipe to delete")
+                    .font(PD.marker(10))
+                    .foregroundColor(PD.Colors.ink300)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.vertical, 6)
+                    .listRowBackground(PD.Colors.paper100)
+                    .listRowSeparator(.hidden)
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
@@ -245,7 +254,9 @@ struct ContentView: View {
         let l = url.lowercased()
         if l.contains("linkedin") || l.contains("greenhouse") ||
            l.contains("lever")    || l.contains("job")        ||
-           l.contains("career")   { return "Jobs" }
+           l.contains("career")   || l.contains("beamery")    ||
+           l.contains("talent")   || l.contains("workday")    ||
+           l.contains("smartrecruiters") { return "Jobs" }
         if l.contains("youtube")  || l.contains("youtu.be") ||
            l.contains("vimeo")    || l.contains("twitch")    { return "Videos" }
         if l.contains("medium")   || l.contains("substack") ||

@@ -6,6 +6,7 @@
 //
 import AppKit
 import SwiftUI
+import CoreText
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem!
@@ -15,12 +16,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var hostingController: NSHostingController<AnyView>!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // DEBUG – check fonts are bundled (remove once confirmed)
-        for family in NSFontManager.shared.availableFontFamilies {
-            if family.lowercased().contains("caveat") ||
-               family.lowercased().contains("patrick") ||
-               family.lowercased().contains("kalam") {
-                print("✅ Font loaded: \(family)")
+        // Register custom fonts programmatically (UIAppFonts is iOS-only, doesn't work on macOS)
+        for name in ["Caveat-Bold", "PatrickHand-Regular", "Kalam-Regular"] {
+            if let url = Bundle.main.url(forResource: name, withExtension: "ttf") {
+                CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
+                print("✅ Registered font: \(name)")
+            } else {
+                print("❌ Font not found in bundle: \(name)")
             }
         }
 
