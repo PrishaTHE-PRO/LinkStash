@@ -8,31 +8,48 @@ import AppKit
 import SwiftUI
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-    // statusItem = the icon in the top menu bar
     var statusItem: NSStatusItem!
-    
-    // popover = the dropdown panel that appears when you click the icon
     var popover: NSPopover!
-    
+    // Keep store + hostingController as strong properties so they are never deallocated
+    var store = LinkStore()
+    var hostingController: NSHostingController<AnyView>!
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // create menu bar
+        // DEBUG – check fonts are bundled (remove once confirmed)
+        for family in NSFontManager.shared.availableFontFamilies {
+            if family.lowercased().contains("caveat") ||
+               family.lowercased().contains("patrick") ||
+               family.lowercased().contains("kalam") {
+                print("✅ Font loaded: \(family)")
+            }
+        }
+
+        // Menu bar icon
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = statusItem.button {
-            // SF Symbols names for a chain link icon
             button.image = NSImage(systemSymbolName: "link.circle.fill",
-                                   
                                    accessibilityDescription: "LinkStash")
-            // when clicked, call out togglePopover function
             button.action = #selector(togglePopover)
         }
-        // the popover
+
+        // Build the SwiftUI view — .preferredColorScheme(.light) forces light rendering
+        // regardless of the user's system appearance, so custom hex colors always show correctly
+        let rootView = AnyView(
+            ContentView()
+                .environmentObject(store)
+                .preferredColorScheme(.light)
+        )
+        hostingController = NSHostingController(rootView: rootView)
+        // Make the NSView layer-backed with the paper background so nothing bleeds through
+        hostingController.view.wantsLayer = true
+        hostingController.view.layer?.backgroundColor = NSColor(red: 251/255, green: 246/255, blue: 233/255, alpha: 1).cgColor
+
+        // Popover
         popover = NSPopover()
         popover.contentSize = NSSize(width: 360, height: 540)
-        // .trasient = closes when i clcik anywhere else
         popover.behavior = .transient
-        // plug in out SwiftUI view as the contents
-        popover.contentViewController = NSHostingController(rootView: ContentView().environmentObject(LinkStore())
-        )
+        popover.appearance = NSAppearance(named: .aqua)
+        popover.contentViewController = hostingController
     }
     // this runs every time the menu bar icon is clicked
     @objc func togglePopover() {
